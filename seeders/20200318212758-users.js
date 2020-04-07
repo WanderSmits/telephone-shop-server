@@ -49,6 +49,7 @@ module.exports = {
         phone: "+3197010281241",
         createdAt: new Date(),
         updatedAt: new Date(),
+        isOwner: true
       }),
       User.upsert({
         id: 2,
@@ -58,6 +59,7 @@ module.exports = {
         phone: "+3197010281029",
         createdAt: new Date(),
         updatedAt: new Date(),
+        isOwner: false
       }),
     ]);
 

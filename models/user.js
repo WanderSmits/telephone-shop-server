@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
+      isOwner: DataTypes.BOOLEAN
     },
     {}
   );
