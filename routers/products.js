@@ -3,6 +3,8 @@ const { Router } = require("express");
 const Products = require("../models").product;
 const ProductsDetails = require("../models").detail;
 const Orders = require("../models").order;
+const User = require("../models").user;
+
 
 const router = new Router();
 
@@ -27,7 +29,10 @@ router.get(`/:id`, async (req, res) => {
 
   try {
     const productsDetails = await Products.findByPk(productsId, {
-      include: [{ model: ProductsDetails }],
+      include: [
+        { model: ProductsDetails },
+        { model: User, attributes: ["id", "name", "email", "phone"] },
+      ],
     });
 
     if (productsDetails === null) {
@@ -41,6 +46,7 @@ router.get(`/:id`, async (req, res) => {
     console.log(e);
   }
 });
+
 
 router.post(
   `/:id/order/`,
@@ -74,5 +80,49 @@ router.post(
     }
   }
 );
+
+
+router.post("/products", auth, async (req, res, next) => {
+  const { productName, imageUrl, price, description } = req.body;
+
+  if (!productName || !imageUrl || !price || !description) {
+    return res.status(400).send({
+      message:
+        "Please provide a product name, image link, price and product description.",
+    });
+  }
+
+  try {
+    userId = req.user.id;
+    console.log("ARTIST ID", userId);
+
+    // const userOwner = await User.findByPk(userId, {
+    //   attributes: ["isOwner"],
+    //   raw: true
+    // });
+
+    // if (!userOwner.isOwner) {
+    //   return res
+    //     .status(403)
+    //     .send({ message: "You are not authorized to create a product." });
+    // }
+
+    const newProduct = await Products.create({
+      productName,
+      mimageUrl,
+      price,
+      description,
+      userId,
+    });
+
+    return res.status(201).send({
+      message: "Product successfully created! Good luck with the sales",
+      newProduct,
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
 
 module.exports = router;

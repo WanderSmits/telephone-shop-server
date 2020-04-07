@@ -35,7 +35,8 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.post("/signup", async (req, res) => {
-  const { email, password, name } = req.body;
+  const { email, password, isOwner, name } = req.body;
+
   if (!email || !password || !name) {
     return res.status(400).send("Please provide an email, password and a name");
   }
@@ -44,6 +45,7 @@ router.post("/signup", async (req, res) => {
     const newUser = await User.create({
       email,
       password: bcrypt.hashSync(password, SALT_ROUNDS),
+      isOwner,
       name,
     });
 
@@ -62,6 +64,8 @@ router.post("/signup", async (req, res) => {
     return res.status(400).send({ message: "Something went wrong, sorry" });
   }
 });
+
+
 
 // The /me endpoint can be used to:
 // - get the users email & name using only their token
