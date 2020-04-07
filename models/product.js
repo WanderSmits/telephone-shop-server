@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
   product.associate = function (models) {
     product.belongsTo(models.user);
     product.hasOne(models.detail);
+    product.belongsToMany(models.user, {
+      through: "orders",
+      foreignKey: "productId",
+    });
   };
   return product;
 };
