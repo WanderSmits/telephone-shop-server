@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     "order",
     {
       userId: DataTypes.INTEGER,
-      productId: DataTypes.ARRAY(DataTypes.DECIMAL),
+      productId: DataTypes.INTEGER,
     },
     {}
   );
