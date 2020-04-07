@@ -118,16 +118,20 @@ const authMiddleWare = require("./auth/middleware");
  */
 
 // GET endpoint for testing purposes, can be removed
-app.get("/", (req, res) => {
-  res.send("Hi from express");
-});
+// app.get("/", (req, res) => {
+//   res.send("Hi from express");
+// });
+
+// THIS IS PRODUCTS ROUTER
+const productsRouter = require("./routers/products");
+app.use("/products", productsRouter);
 
 // POST endpoint for testing purposes, can be removed
 app.post("/echo", (req, res) => {
   res.json({
     youPosted: {
-      ...req.body
-    }
+      ...req.body,
+    },
   });
 });
 
@@ -140,11 +144,11 @@ app.post("/authorized_post_request", authMiddleWare, (req, res) => {
 
   res.json({
     youPosted: {
-      ...req.body
+      ...req.body,
     },
     userFoundWithToken: {
-      ...user.dataValues
-    }
+      ...user.dataValues,
+    },
   });
 });
 
