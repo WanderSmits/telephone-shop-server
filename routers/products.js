@@ -94,7 +94,6 @@ router.post("/", auth, async (req, res, next) => {
 
   try {
     userId = req.user.id;
-    console.log("ARTIST ID", userId);
 
     const userOwner = await User.findByPk(userId, {
       attributes: ["isOwner"],
