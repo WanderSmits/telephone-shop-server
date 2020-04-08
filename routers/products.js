@@ -1,5 +1,5 @@
 const { Router } = require("express");
-
+const auth = require("../auth/middleware");
 const Products = require("../models").product;
 const ProductsDetails = require("../models").detail;
 const Orders = require("../models").order;
@@ -82,7 +82,7 @@ router.post(
 );
 
 
-router.post("/products", auth, async (req, res, next) => {
+router.post("/", auth, async (req, res, next) => {
   const { productName, imageUrl, price, description } = req.body;
 
   if (!productName || !imageUrl || !price || !description) {
@@ -96,20 +96,20 @@ router.post("/products", auth, async (req, res, next) => {
     userId = req.user.id;
     console.log("ARTIST ID", userId);
 
-    // const userOwner = await User.findByPk(userId, {
-    //   attributes: ["isOwner"],
-    //   raw: true
-    // });
+    const userOwner = await User.findByPk(userId, {
+      attributes: ["isOwner"],
+      raw: true
+    });
 
-    // if (!userOwner.isOwner) {
-    //   return res
-    //     .status(403)
-    //     .send({ message: "You are not authorized to create a product." });
-    // }
+    if (!userOwner.isOwner) {
+      return res
+        .status(403)
+        .send({ message: "You are not authorized to create a product." });
+    }
 
     const newProduct = await Products.create({
       productName,
-      mimageUrl,
+      imageUrl,
       price,
       description,
       userId,
