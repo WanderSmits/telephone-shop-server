@@ -126,6 +126,9 @@ const authMiddleWare = require("./auth/middleware");
 const productsRouter = require("./routers/products");
 app.use("/products", productsRouter);
 
+const supportRouter = require("./routers/support");
+app.use("/support", supportRouter);
+
 // POST endpoint for testing purposes, can be removed
 app.post("/echo", (req, res) => {
   res.json({
