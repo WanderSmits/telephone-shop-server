@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     resolved: DataTypes.BOOLEAN
   }, {});
   support.associate = function(models) {
-    // associations can be defined here
+    support.belongsTo(models.user);
   };
   return support;
 };
