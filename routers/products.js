@@ -5,7 +5,6 @@ const ProductsDetails = require("../models").detail;
 const Orders = require("../models").order;
 const User = require("../models").user;
 
-
 const router = new Router();
 
 router.get("/", async (req, res) => {
@@ -47,40 +46,63 @@ router.get(`/:id`, async (req, res) => {
   }
 });
 
-
 router.post(
-  `/:id/order/`,
+  `/order`,
   /* authmiddleware*/ async (req, res) => {
     //DEPENDS ON HOW THE DATA IS PASSED THROUGH REQ.BODY OR REQ.PARAMS (ONLY PLACE ORDER ON DETAILPAGE)
-    // const { usersId } = req.body;
+    const { userId, productId } = req.body;
     // const productsId = req.params.id;
+    console.log("am i in be?");
 
-    const usersId = 1;
-    const productsId = 2;
+    const allProductIds = productId.map((id) => {
+      return id;
+    });
+
+    console.log("What are my values?", allProductIds.length);
+
+    // const usersId = 1;
+    // const productsId = 2;
 
     try {
-      const submitOrder = await Orders.create({
-        userId: usersId,
-        productId: productsId,
-      });
+      if ((allProductIds.length = 1)) {
+        const submitOrder = await Orders.create({
+          userId: userId,
+          productId: allProductIds,
+        });
 
-      if (usersId === null) {
+        return res.json({
+          submitOrder,
+        });
+      }
+      if ((allProductIds.length = 2)) {
+        const submitOrder = await Orders.create(
+          {
+            userId: userId,
+            productId: allProductIds[0],
+          },
+          Orders.create({ userId: userId, productId: allProductIds[1] })
+        );
+
+        // const submitOrder2 = await Orders.create({
+        //   userId: userId,
+        //   productId: allProductIds[1],
+        // });
+
+        return res.status(201).send({ message: "Order placed", submitOrder });
+      }
+
+      if (userId === null) {
         return res.status(404).send({ message: "You are not logged in" });
       }
 
-      if (productsId === null) {
+      if (productId === null) {
         return res.status(404).send({ message: "This product doesnt exist" });
       }
-
-      return res.json({
-        submitOrder,
-      });
     } catch (e) {
       console.log(e);
     }
   }
 );
-
 
 router.post("/", auth, async (req, res, next) => {
   const { productName, imageUrl, price, description } = req.body;
@@ -98,7 +120,7 @@ router.post("/", auth, async (req, res, next) => {
 
     const userOwner = await User.findByPk(userId, {
       attributes: ["isOwner"],
-      raw: true
+      raw: true,
     });
 
     if (!userOwner.isOwner) {
@@ -123,6 +145,5 @@ router.post("/", auth, async (req, res, next) => {
     next(e);
   }
 });
-
 
 module.exports = router;
