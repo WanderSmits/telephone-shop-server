@@ -46,63 +46,45 @@ router.get(`/:id`, async (req, res) => {
   }
 });
 
-router.post(
-  `/order`,
-  /* authmiddleware*/ async (req, res) => {
-    //DEPENDS ON HOW THE DATA IS PASSED THROUGH REQ.BODY OR REQ.PARAMS (ONLY PLACE ORDER ON DETAILPAGE)
-    const { userId, productId } = req.body;
-    // const productsId = req.params.id;
-    console.log("am i in be?");
+router.post(`/order`, auth, async (req, res) => {
+  const { userId, productId } = req.body;
+  const orderNumber = parseInt(Math.random() * 100000);
+  console.log(`whats orderNumber`, orderNumber);
 
-    const allProductIds = productId.map((id) => {
-      return id;
-    });
-
-    console.log("What are my values?", allProductIds.length);
-
-    // const usersId = 1;
-    // const productsId = 2;
-
-    try {
-      if ((allProductIds.length = 1)) {
-        const submitOrder = await Orders.create({
-          userId: userId,
-          productId: allProductIds,
-        });
-
-        return res.json({
-          submitOrder,
-        });
-      }
-      if ((allProductIds.length = 2)) {
-        const submitOrder = await Orders.create(
-          {
-            userId: userId,
-            productId: allProductIds[0],
-          },
-          Orders.create({ userId: userId, productId: allProductIds[1] })
-        );
-
-        // const submitOrder2 = await Orders.create({
-        //   userId: userId,
-        //   productId: allProductIds[1],
-        // });
-
-        return res.status(201).send({ message: "Order placed", submitOrder });
-      }
-
-      if (userId === null) {
-        return res.status(404).send({ message: "You are not logged in" });
-      }
-
-      if (productId === null) {
-        return res.status(404).send({ message: "This product doesnt exist" });
-      }
-    } catch (e) {
-      console.log(e);
+  try {
+    if (userId === null) {
+      return res.status(404).send({ message: "You are not logged in" });
     }
+
+    if (productId === null) {
+      return res.status(404).send({ message: "This product doesnt exist" });
+    }
+
+    const submitOrder1 = await Orders.create({
+      userId: userId,
+      productId: productId[0],
+      orderNumber,
+      // color,
+      // expressDelivery,
+    });
+    if (productId.length > 1) {
+      const submitOrder2 = await Orders.create({
+        userId,
+        productId: productId[1],
+        orderNumber,
+        // color,
+        // expressDelivery,
+      });
+      return res
+        .status(201)
+        .send({ message: "Order placed", submitOrder1, submitOrder2 });
+    }
+
+    return res.status(201).send({ message: "Order placed", submitOrder1 });
+  } catch (e) {
+    console.log(e);
   }
-);
+});
 
 router.post("/", auth, async (req, res, next) => {
   const { productName, imageUrl, price, description } = req.body;

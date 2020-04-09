@@ -5,6 +5,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       userId: DataTypes.INTEGER,
       productId: DataTypes.INTEGER,
+      orderNumber: DataTypes.INTEGER,
+      productColor: DataTypes.STRING,
+      expressDelivery: DataTypes.BOOLEAN,
     },
     {}
   );
