@@ -26,6 +26,10 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
+      orderNumber: Sequelize.INTEGER,
+      productColor: Sequelize.STRING,
+      expressDelivery: Sequelize.BOOLEAN,
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

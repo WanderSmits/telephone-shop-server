@@ -63,11 +63,17 @@ router.post(`/order`, auth, async (req, res) => {
     const submitOrder1 = await Orders.create({
       userId: userId,
       productId: productId[0],
+      orderNumber,
+      // color,
+      // expressDelivery,
     });
     if (productId.length > 1) {
       const submitOrder2 = await Orders.create({
         userId,
         productId: productId[1],
+        orderNumber,
+        // color,
+        // expressDelivery,
       });
       return res
         .status(201)
