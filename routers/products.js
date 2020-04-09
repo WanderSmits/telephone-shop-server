@@ -106,6 +106,15 @@ router.post(
 
 router.post("/", auth, async (req, res, next) => {
   const { productName, imageUrl, price, description } = req.body;
+  const {
+    operatingSystem,
+    batteryLife,
+    screenSize,
+    weightInGrams,
+    virtualAssistant,
+    guaranteeInYears,
+  } = req.body;
+  console.log(`whats the req body?`, req.body);
 
   if (!productName || !imageUrl || !price || !description) {
     return res.status(400).send({
@@ -136,9 +145,20 @@ router.post("/", auth, async (req, res, next) => {
       userId,
     });
 
+    const newProductDetails = await ProductsDetails.create({
+      operatingSystem,
+      batteryLife,
+      screenSize,
+      weightInGrams,
+      virtualAssistant,
+      guaranteeInYears,
+      productId: newProduct.id,
+    });
+
     return res.status(201).send({
       message: "Product successfully created! Good luck with the sales",
       newProduct,
+      newProductDetails,
     });
   } catch (e) {
     next(e);
